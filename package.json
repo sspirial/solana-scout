@@ -5,7 +5,7 @@
   "type": "module",
   "main": "src/index.js",
   "bin": {
-    "solana-scout": "./src/cli.js"
+    "solana-scout": "src/cli.js"
   },
   "scripts": {
     "start": "node src/cli.js",
