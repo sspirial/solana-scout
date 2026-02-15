@@ -1,6 +1,6 @@
 {
   "name": "solana-scout",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "Agent-first Solana wallet intelligence CLI. Profiles wallets with token holdings, transaction patterns, DeFi activity, and risk scoring — designed for AI agent consumption.",
   "type": "module",
   "main": "src/index.js",
