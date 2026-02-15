@@ -17,11 +17,15 @@ As AI agents begin operating on-chain, they need fast, deterministic wallet inte
 ## Quick Start
 
 ```bash
-# Analyze any wallet (human-readable)
+# Profile a wallet (human-readable)
 npx solana-scout 7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU
 
 # Agent mode (structured JSON)
 npx solana-scout 7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU --json
+
+# Compare two wallets
+npx solana-scout compare <wallet1> <wallet2>
+npx solana-scout compare <wallet1> <wallet2> --json
 
 # Custom RPC
 npx solana-scout <address> --rpc=https://your-rpc-endpoint.com
@@ -36,6 +40,12 @@ npx solana-scout <address> --rpc=https://your-rpc-endpoint.com
 - **Risk Scoring** — 0-100 risk score with labeled factors (balance, age, activity, failure rate)
 - **Wallet Classification** — Automatic tagging: Whale, Active Trader, Token Collector, Dormant, New Wallet, etc.
 - **Program Labels** — 30+ known Solana programs identified (Jupiter, Orca, Raydium, Metaplex, Drift, Marinade, etc.)
+
+### Wallet Comparison:
+- **Similarity Score** — 0-100 composite score using Jaccard token overlap, activity frequency, balance ratio
+- **Shared Tokens** — Which tokens both wallets hold, with balances
+- **Risk Delta** — How different the wallets' risk profiles are
+- **Relationship Classification** — Strongly Linked / Similar / Moderate / Different / Unrelated
 
 ### JSON Schema (for agents)
 
@@ -81,9 +91,10 @@ npx solana-scout <address> --rpc=https://your-rpc-endpoint.com
 solana-scout/
 ├── src/
 │   ├── cli.js          # CLI entry point with human/JSON output
-│   └── index.js        # Core analysis engine (exportable library)
+│   ├── index.js        # Core analysis engine (exportable library)
+│   └── compare.js      # Wallet comparison engine
 ├── test/
-│   └── run.js          # Test suite (15 assertions)
+│   └── run.js          # Test suite (15+ assertions)
 ├── package.json
 ├── .gitignore
 ├── README.md
