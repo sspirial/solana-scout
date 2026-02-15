@@ -1,6 +1,11 @@
 # Solana Scout v2
 
+[![npm version](https://img.shields.io/npm/v/solana-scout)](https://www.npmjs.com/package/solana-scout)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 **Agent-first wallet intelligence for the Solana ecosystem.**
+
+> ⚡ **Verify in 10 seconds:** `npx solana-scout 7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU --json`
 
 Solana Scout profiles any Solana wallet and produces structured intelligence reports — designed for AI agent consumption via `--json`, with a human-readable display mode built in.
 
@@ -32,6 +37,55 @@ npx solana-scout <address> --rpc=https://your-rpc-endpoint.com
 ```
 
 ## What You Get
+
+### Live Demo Output
+
+```
+  ╔═══════════════════════════════════════════╗
+  ║         SOLANA SCOUT REPORT               ║
+  ╚═══════════════════════════════════════════╝
+
+  📍 Address:    7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU
+  🕐 Scanned:    2026-02-15T17:56:33.901Z
+  🌐 Network:    Solana Mainnet
+
+  ─── BALANCE ──────────────────────────────
+  💰 SOL Balance:     49.00788891 SOL
+  💵 Lamports:        49007888910
+
+  ─── TOKEN HOLDINGS ─────────────────────
+  🪙  Token Accounts:  59
+  📊 Non-zero:        58
+     • 7xKXtg2C…  Balance: 1110498.52 (decimals: 9)
+     • FKqy2ZHv…  Balance: 1000000 (decimals: 6)
+     ... and 49 more
+
+  ─── TRANSACTION ACTIVITY ───────────────
+  📝 Recent Txns:     100
+  ⏱️  Avg Frequency:   ~2421.5 txns/day
+
+  ─── RISK PROFILE ───────────────────────
+  🎯 Risk Score:      80/100
+  🏷️  Risk Level:      🔴 CRITICAL
+  📋 Factors:
+     🔽 Diverse token portfolio (>20 tokens) (-5)
+     🔽 High transaction activity (-5)
+     🔺 High transaction failure rate (+20)
+     🔺 Wallet less than 7 days old (+20)
+
+  ─── WALLET CLASSIFICATION ──────────────
+  🤖 Type:            Active Trader
+  🔖 Tags:            active-trader, token-collector, funded, token-holder
+```
+
+### Try It Yourself
+```bash
+# Profile any wallet
+npx solana-scout 7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU
+
+# Compare two wallets
+npx solana-scout compare 7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU vines1vzrYbzLMRdu58ou5XTby4qAqVRLmqo36NKPTg
+```
 
 ### Wallet Report Includes:
 - **SOL Balance** — Current lamport/SOL balance
