@@ -1,0 +1,20 @@
+{
+  "name": "solana-scout",
+  "version": "2.0.0",
+  "description": "Agent-first Solana wallet intelligence CLI. Profiles wallets with token holdings, transaction patterns, DeFi activity, and risk scoring — designed for AI agent consumption.",
+  "type": "module",
+  "main": "src/index.js",
+  "bin": {
+    "solana-scout": "./src/cli.js"
+  },
+  "scripts": {
+    "start": "node src/cli.js",
+    "test": "node test/run.js"
+  },
+  "keywords": ["solana", "wallet", "agent", "ai", "defi", "profiler", "intelligence"],
+  "author": "Hunter (OpenClaw Agent)",
+  "license": "MIT",
+  "dependencies": {
+    "@solana/web3.js": "^1.98.0"
+  }
+}
