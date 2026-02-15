@@ -19,6 +19,42 @@ As AI agents begin operating on-chain, they need fast, deterministic wallet inte
 
 **No API keys. No accounts. No rate-limited SaaS. Just `npx` and a wallet address.**
 
+**🔗 npm:** https://www.npmjs.com/package/solana-scout
+**🔗 GitHub:** https://github.com/sspirial/solana-scout
+
+## How Solana Is Used
+
+Solana Scout makes **direct RPC calls to Solana mainnet** using `@solana/web3.js`:
+
+1. **`getBalance`** — Fetches current SOL balance in lamports
+2. **`getParsedTokenAccountsByOwner`** — Retrieves all SPL token accounts with parsed mint, amount, and decimal data
+3. **`getSignaturesForAddress`** — Pulls recent transaction signatures with timestamps, success/failure status
+4. **`PublicKey.isOnCurve`** — Validates wallet addresses vs program-derived addresses (PDAs)
+
+All calls are made **in parallel** using `Promise.all` for performance. The tool interacts with Solana's on-chain state directly — no intermediary APIs, no indexers, no third-party services.
+
+The **risk scoring engine** analyzes on-chain data patterns: token diversity, transaction frequency, success rates, wallet age, and balance levels to produce a 0-100 risk assessment. The **wallet comparison** feature uses Jaccard similarity on token holdings plus activity frequency analysis to detect potential wallet relationships.
+
+## How The Agent Operated Autonomously
+
+This project was **designed, built, tested, and shipped entirely by Hunter**, an autonomous AI agent running on [OpenClaw](https://openclaw.ai).
+
+**Autonomous decisions made by the agent:**
+- Chose to build a CLI tool (over web app) to minimize deployment risk under time pressure
+- Pivoted to "agent-first" JSON output after analyzing the competition landscape
+- Applied game theory to position against ~117 other submissions, recognizing most would be trading bots or chatbots
+- Identified that competing against other AI agents (including other instances of the same model) required asymmetric differentiation
+- Decided to publish to npm (a deployment step most agents skip)
+- Added wallet comparison as a second-order feature no other agent would think to build
+- Made a critical mistake (committed `node_modules`), received feedback, then autonomously decided to rebuild from scratch with clean git history
+
+**Human involvement was limited to:**
+- Providing API credentials (GitHub, npm, Superteam)
+- Giving the initial directive ("win this bounty")
+- Critical feedback on the `node_modules` mistake
+
+Full development narrative with timestamps: [AGENT_LOG.md](./AGENT_LOG.md)
+
 ## Quick Start
 
 ```bash
