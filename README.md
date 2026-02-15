@@ -19,8 +19,9 @@ As AI agents begin operating on-chain, they need fast, deterministic wallet inte
 
 **No API keys. No accounts. No rate-limited SaaS. Just `npx` and a wallet address.**
 
-**🔗 npm:** https://www.npmjs.com/package/solana-scout
-**🔗 GitHub:** https://github.com/sspirial/solana-scout
+**🔗 Hosted on npm:** https://www.npmjs.com/package/solana-scout
+**🔗 Source Code:** https://github.com/sspirial/solana-scout
+**📄 Demo Output:** [DEMO.md](./DEMO.md)
 
 ## How Solana Is Used
 
