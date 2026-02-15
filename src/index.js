@@ -110,8 +110,8 @@ export async function analyzeWallet(address, rpcUrl = 'https://api.mainnet-beta.
   // Process transactions
   const txData = processTransactions(signatures);
 
-  // Process programs
-  const programData = processPrograms(signatures);
+  // Process programs — fetch recent transactions for program interaction data
+  const programData = await processPrograms(signatures, connection);
 
   // Risk scoring
   const risk = calculateRisk(solBalance, nonZeroHoldings, txData, programData);
@@ -176,21 +176,60 @@ function processTransactions(signatures) {
   };
 }
 
-function processPrograms(signatures) {
+async function processPrograms(signatures, connection) {
   const programCounts = {};
 
-  for (const sig of signatures) {
-    // getSignaturesForAddress doesn't return program IDs directly,
-    // but we can parse memo if available. For now, track error vs success patterns.
+  // Fetch up to 5 recent transactions sequentially to avoid rate limits
+  const recentSigs = signatures.slice(0, 5).map(s => s.signature);
+  let fetched = 0;
+
+  for (const sig of recentSigs) {
+    try {
+      const tx = await connection.getParsedTransaction(sig, { maxSupportedTransactionVersion: 0 });
+      if (!tx) continue;
+      fetched++;
+
+      // Extract program IDs from instructions
+      const instructions = tx.transaction?.message?.instructions || [];
+      for (const ix of instructions) {
+        const programId = ix.programId?.toBase58?.() || ix.programId;
+        if (programId) {
+          programCounts[programId] = (programCounts[programId] || 0) + 1;
+        }
+      }
+
+      // Also check inner instructions
+      const innerInstructions = tx.meta?.innerInstructions || [];
+      for (const inner of innerInstructions) {
+        for (const ix of inner.instructions || []) {
+          const programId = ix.programId?.toBase58?.() || ix.programId;
+          if (programId) {
+            programCounts[programId] = (programCounts[programId] || 0) + 1;
+          }
+        }
+      }
+    } catch {
+      // Rate limited or unavailable — skip gracefully
+      continue;
+    }
   }
 
-  // We'll get program info from a different source — parse the accounts interacted with
-  // For v2, we use the confirmed signatures and note this limitation
+  const list = Object.entries(programCounts)
+    .map(([id, count]) => ({
+      id,
+      count,
+      label: PROGRAM_LABELS[id] || null,
+      isDeFi: DEFI_PROGRAMS.has(id),
+      isNFT: NFT_PROGRAMS.has(id),
+    }))
+    .sort((a, b) => b.count - a.count);
+
   return {
-    note: 'Program interaction details require getTransaction calls (rate-limited). Showing known associations from token accounts.',
-    list: Object.entries(programCounts)
-      .map(([id, count]) => ({ id, count, label: PROGRAM_LABELS[id] || null }))
-      .sort((a, b) => b.count - a.count),
+    sampled: fetched,
+    uniquePrograms: list.length,
+    defiInteractions: list.filter(p => p.isDeFi).length,
+    nftInteractions: list.filter(p => p.isNFT).length,
+    list,
   };
 }
 
@@ -248,6 +287,17 @@ function calculateRisk(solBalance, tokens, txData, programData) {
       score += 20;
       factors.push({ label: 'Wallet less than 7 days old', impact: 20, direction: 'up' });
     }
+  }
+
+  // DeFi usage (from program analysis)
+  if (programData.defiInteractions > 0) {
+    score -= 5;
+    factors.push({ label: `DeFi activity detected (${programData.defiInteractions} protocols)`, impact: -5, direction: 'down' });
+  }
+
+  // NFT usage
+  if (programData.nftInteractions > 0) {
+    factors.push({ label: `NFT activity detected (${programData.nftInteractions} protocols)`, impact: 0, direction: 'down' });
   }
 
   score = Math.max(0, Math.min(100, score));
